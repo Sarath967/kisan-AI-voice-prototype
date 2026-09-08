@@ -1,0 +1,3084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisan AI - Smart Farmer Assistant</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7f2;
+    color: #263127;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background: white;
+    border-right: 1px solid #e1e8df;
+    z-index: 100;
+}
+
+.logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid #edf1eb;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 45px;
+    height: 45px;
+    background: #2f6b3b;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.logo h2 {
+    color: #183c25;
+    font-size: 19px;
+}
+
+.logo small {
+    color: #7b857c;
+    font-size: 9px;
+}
+
+.nav {
+    padding: 15px 12px;
+}
+
+.nav-title {
+    color: #9aa39a;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 15px 10px 7px;
+}
+
+.nav button {
+    width: 100%;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #566158;
+    text-align: left;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+.nav button:hover,
+.nav button.active {
+    background: #eaf4e8;
+    color: #2f6b3b;
+    font-weight: bold;
+}
+
+.profile-mini {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    border-top: 1px solid #edf1eb;
+}
+
+.profile-mini-inner {
+    background: #f4f8f2;
+    border-radius: 14px;
+    padding: 11px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.profile-mini-name {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.profile-mini-crop {
+    color: #7b857c;
+    font-size: 11px;
+}
+
+/* MAIN */
+.main {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+}
+
+.mobile-header {
+    display: none;
+    background: white;
+    padding: 13px;
+    border-radius: 15px;
+    margin-bottom: 18px;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e1e8df;
+}
+
+.page-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    color: #183c25;
+    font-size: 29px;
+}
+
+.page-header p {
+    color: #717b72;
+    margin-top: 7px;
+    font-size: 14px;
+}
+
+.crop-badge {
+    background: #eef6ed;
+    color: #376040;
+    border-radius: 20px;
+    padding: 8px 13px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* CARDS */
+.card {
+    background: white;
+    border: 1px solid #e2e8df;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(45,65,40,.06);
+    margin-bottom: 20px;
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap: 18px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8df;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(45,65,40,.06);
+}
+
+.stat-title {
+    color: #6b776b;
+    font-size: 13px;
+}
+
+.stat-value {
+    font-size: 27px;
+    font-weight: 800;
+    color: #183c25;
+    margin-top: 8px;
+}
+
+.stat-sub {
+    color: #7c877d;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.stat-icon {
+    float: right;
+    background: #eef6ed;
+    border-radius: 13px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #243a29;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* BUTTONS */
+.btn {
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 11px;
+    border: none;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background: #2f6b3b;
+    color: white;
+}
+
+.btn-secondary {
+    background: #eef6ed;
+    color: #2f6b3b;
+    border: 1px solid #cfe1cc;
+}
+
+.btn-danger {
+    background: #fff0ed;
+    color: #b44232;
+    border: 1px solid #f0c7c0;
+}
+
+.btn:hover {
+    opacity: .9;
+}
+
+/* QUICK ACTIONS */
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 12px;
+}
+
+.quick-action {
+    background: white;
+    border: 1px solid #e0e8dd;
+    border-radius: 15px;
+    padding: 17px;
+    text-align: left;
+}
+
+.quick-action:hover {
+    background: #f6faf5;
+}
+
+.quick-icon {
+    font-size: 25px;
+}
+
+.quick-title {
+    font-weight: bold;
+    color: #29402d;
+    margin-top: 9px;
+}
+
+.quick-text {
+    color: #788178;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* FORMS */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+}
+
+label {
+    display: block;
+    color: #667168;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    margin-top: 7px;
+    padding: 11px 12px;
+    border: 1px solid #d8e1d6;
+    border-radius: 10px;
+    background: white;
+    color: #273329;
+    font-size: 14px;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #bcd6b9;
+}
+
+/* CHART */
+.chart-row {
+    margin-bottom: 18px;
+}
+
+.chart-label {
+    display: flex;
+    justify-content: space-between;
+    color: #586258;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.bar-bg {
+    height: 13px;
+    background: #edf1ec;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    border-radius: 20px;
+    transition: width .5s;
+}
+
+.income-bar {
+    background: #4c8a57;
+}
+
+.expense-bar {
+    background: #d9954c;
+}
+
+/* CHAT */
+.chat {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid #e2e8df;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #183c25;
+    color: white;
+    padding: 20px;
+}
+
+.chat-body {
+    height: 410px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fbfdfb;
+}
+
+.message {
+    margin-bottom: 14px;
+    display: flex;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 78%;
+    padding: 12px 15px;
+    border-radius: 17px;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.message.ai .bubble {
+    background: #f0f5ee;
+    color: #263127;
+    border-bottom-left-radius: 4px;
+}
+
+.message.user .bubble {
+    background: #2f6b3b;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.speak-btn {
+    background: transparent;
+    border: none;
+    color: #52705a;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.chat-input {
+    border-top: 1px solid #e1e8df;
+    padding: 14px;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input input {
+    margin: 0;
+    flex: 1;
+}
+
+.mic {
+    width: 48px;
+    border-radius: 12px;
+    border: 1px solid #cfe1cc;
+    background: #eef6ed;
+    font-size: 19px;
+}
+
+/* TABLE */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th {
+    background: #f4f7f2;
+    color: #687268;
+    font-size: 12px;
+    text-align: left;
+    padding: 13px;
+}
+
+td {
+    padding: 13px;
+    border-top: 1px solid #e7ece5;
+    font-size: 13px;
+}
+
+/* WEATHER */
+.weather-main {
+    background: linear-gradient(135deg,#183c25,#3c7548);
+    color: white;
+    border-radius: 18px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.temperature {
+    font-size: 54px;
+    font-weight: 800;
+    margin: 8px 0;
+}
+
+.weather-icon {
+    font-size: 70px;
+}
+
+/* HELPLINE */
+.helpline {
+    background: #183c25;
+    color: white;
+    text-align: center;
+    border-radius: 18px;
+    padding: 35px;
+}
+
+.helpline-number {
+    font-size: 38px;
+    font-weight: 800;
+    margin: 10px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    color: #849086;
+    font-size: 11px;
+    padding: 25px;
+}
+
+/* MOBILE */
+@media(max-width:900px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .mobile-header {
+        display: flex;
+    }
+
+    .mobile-menu {
+        display: block !important;
+    }
+}
+
+.mobile-menu {
+    display: none;
+    background: white;
+    padding: 10px;
+    border: 1px solid #e1e8df;
+    border-radius: 15px;
+    margin-bottom: 18px;
+}
+
+.mobile-menu button {
+    width: 100%;
+    padding: 12px;
+    text-align: left;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+}
+
+.mobile-menu button:hover {
+    background: #eef6ed;
+}
+
+@media(max-width:600px) {
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .weather-main {
+        padding: 22px;
+    }
+
+    .temperature {
+        font-size: 42px;
+    }
+
+    .weather-icon {
+        font-size: 50px;
+    }
+
+    .helpline-number {
+        font-size: 28px;
+    }
+
+    .chat-input {
+        flex-wrap: wrap;
+    }
+
+    .chat-input input {
+        width: 100%;
+        flex-basis: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">🌾</div>
+        <div>
+            <h2>Kisan AI</h2>
+            <small>SMART FARMER ASSISTANT</small>
+        </div>
+    </div>
+
+    <nav class="nav">
+
+        <div class="nav-title">MAIN</div>
+
+        <button class="active" onclick="showPage('dashboard',this)">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="showPage('assistant',this)">
+            🤖 Kisan AI
+        </button>
+
+        <button onclick="showPage('finance',this)">
+            ₹ Farm Finance
+        </button>
+
+        <button onclick="showPage('analytics',this)">
+            📊 Profit & Loss
+        </button>
+
+        <button onclick="showPage('history',this)">
+            📜 Farming History
+        </button>
+
+        <div class="nav-title">FARM SUPPORT</div>
+
+        <button onclick="showPage('disease',this)">
+            🐛 Crop Disease
+        </button>
+
+        <button onclick="showPage('weather',this)">
+            ☁️ Weather
+        </button>
+
+        <button onclick="showPage('tips',this)">
+            💡 Crop Tips
+        </button>
+
+        <button onclick="showPage('helpline',this)">
+            📞 Helpline
+        </button>
+
+        <div class="nav-title">ACCOUNT</div>
+
+        <button onclick="showPage('profile',this)">
+            👨‍🌾 Farmer Profile
+        </button>
+
+    </nav>
+
+    <div class="profile-mini">
+        <div class="profile-mini-inner">
+            <div style="font-size:27px">👨‍🌾</div>
+            <div>
+                <div class="profile-mini-name" id="miniName">
+                    Farmer
+                </div>
+                <div class="profile-mini-crop" id="miniCrop">
+                    Rice
+                </div>
+            </div>
+        </div>
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <div class="mobile-header">
+        <strong style="color:#183c25;font-size:18px">
+            🌾 Kisan AI
+        </strong>
+
+        <button
+            onclick="toggleMobileMenu()"
+            style="border:0;background:#eef6ed;padding:8px 12px;border-radius:10px"
+        >
+            ☰
+        </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+
+        <button onclick="mobilePage('dashboard')">🏠 Dashboard</button>
+        <button onclick="mobilePage('assistant')">🤖 Kisan AI</button>
+        <button onclick="mobilePage('finance')">₹ Farm Finance</button>
+        <button onclick="mobilePage('analytics')">📊 Profit & Loss</button>
+        <button onclick="mobilePage('history')">📜 Farming History</button>
+        <button onclick="mobilePage('disease')">🐛 Crop Disease</button>
+        <button onclick="mobilePage('weather')">☁️ Weather</button>
+        <button onclick="mobilePage('tips')">💡 Crop Tips</button>
+        <button onclick="mobilePage('helpline')">📞 Helpline</button>
+        <button onclick="mobilePage('profile')">👨‍🌾 Profile</button>
+
+    </div>
+
+    <div class="container" id="content"></div>
+
+    <footer>
+        Kisan AI · Smart Farmer Assistant · Farmer Support Platform
+    </footer>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* ==============================
+   DATA
+================================ */
+
+const crops = [
+    "Rice",
+    "Maize",
+    "Cotton",
+    "Tomato",
+    "Chilli",
+    "Groundnut",
+    "Sugarcane",
+    "Wheat",
+    "Pulses",
+    "Vegetables"
+];
+
+const states = [
+    "Andhra Pradesh",
+    "Telangana",
+    "Tamil Nadu",
+    "Karnataka",
+    "Kerala",
+    "Maharashtra",
+    "Odisha",
+    "West Bengal",
+    "Punjab",
+    "Other"
+];
+
+const languages = [
+    "English",
+    "Telugu",
+    "Hindi",
+    "Tamil",
+    "Kannada",
+    "Malayalam",
+    "Marathi",
+    "Bengali",
+    "Odia",
+    "Punjabi"
+];
+
+const cropTips = {
+    Rice: [
+        "Maintain suitable water during crop establishment.",
+        "Check fields regularly for weeds and pest symptoms.",
+        "Avoid unnecessary pesticide applications."
+    ],
+
+    Maize: [
+        "Inspect young leaves regularly for pest damage.",
+        "Maintain proper soil moisture.",
+        "Keep the field free from early weeds."
+    ],
+
+    Cotton: [
+        "Check leaves regularly for sucking pests.",
+        "Monitor the crop weekly.",
+        "Avoid excessive nitrogen application."
+    ],
+
+    Tomato: [
+        "Avoid water stagnation around roots.",
+        "Inspect leaves for spots and curling.",
+        "Support plants when plants become tall."
+    ],
+
+    Chilli: [
+        "Monitor leaves for curling and discoloration.",
+        "Keep the field clean of weeds.",
+        "Use irrigation according to soil moisture."
+    ],
+
+    Groundnut: [
+        "Maintain good drainage.",
+        "Watch for leaf spot symptoms.",
+        "Avoid unnecessary irrigation."
+    ],
+
+    Sugarcane: [
+        "Maintain adequate soil moisture.",
+        "Control weeds during early crop growth.",
+        "Inspect stems and leaves for pest symptoms."
+    ],
+
+    Wheat: [
+        "Monitor weeds during early growth.",
+        "Avoid excessive irrigation.",
+        "Inspect leaves regularly for disease symptoms."
+    ],
+
+    Pulses: [
+        "Monitor flowering and pod formation.",
+        "Check plants regularly for pod damage.",
+        "Maintain good field sanitation."
+    ],
+
+    Vegetables: [
+        "Inspect leaves every few days.",
+        "Remove severely affected plant material safely.",
+        "Avoid standing water around plants."
+    ]
+};
+
+
+/* ==============================
+   LOCAL STORAGE
+================================ */
+
+let profile = JSON.parse(
+    localStorage.getItem("kisanProfile")
+) || {
+    name: "",
+    phone: "",
+    village: "",
+    state: "Andhra Pradesh",
+    crop: "Rice",
+    land: 1,
+    language: "Telugu"
+};
+
+let records = JSON.parse(
+    localStorage.getItem("kisanRecords")
+) || [
+    {
+        id: 1,
+        season: "Kharif 2025",
+        crop: "Rice",
+        area: 2.5,
+        expenses: 52000,
+        income: 81000
+    },
+    {
+        id: 2,
+        season: "Rabi 2025",
+        crop: "Groundnut",
+        area: 2,
+        expenses: 39000,
+        income: 61000
+    }
+];
+
+let currentExpenses =
+    Number(localStorage.getItem("kisanExpenses")) || 0;
+
+let currentIncome =
+    Number(localStorage.getItem("kisanIncome")) || 0;
+
+
+/* ==============================
+   SAVE
+================================ */
+
+function saveData() {
+
+    localStorage.setItem(
+        "kisanProfile",
+        JSON.stringify(profile)
+    );
+
+    localStorage.setItem(
+        "kisanRecords",
+        JSON.stringify(records)
+    );
+
+    localStorage.setItem(
+        "kisanExpenses",
+        currentExpenses
+    );
+
+    localStorage.setItem(
+        "kisanIncome",
+        currentIncome
+    );
+
+    document.getElementById("miniName").innerText =
+        profile.name || "Farmer";
+
+    document.getElementById("miniCrop").innerText =
+        profile.crop;
+}
+
+
+/* ==============================
+   MONEY
+================================ */
+
+function money(value) {
+
+    return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0
+    }).format(Number(value) || 0);
+}
+
+
+/* ==============================
+   PAGE NAVIGATION
+================================ */
+
+function showPage(page, button) {
+
+    document.querySelectorAll(".nav button")
+        .forEach(btn => btn.classList.remove("active"));
+
+    if(button) {
+        button.classList.add("active");
+    }
+
+    renderPage(page);
+}
+
+function mobilePage(page) {
+
+    document.getElementById("mobileMenu")
+        .style.display = "none";
+
+    renderPage(page);
+}
+
+function toggleMobileMenu() {
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+    menu.style.display =
+        menu.style.display === "block"
+            ? "none"
+            : "block";
+}
+
+
+/* ==============================
+   PAGE HEADER
+================================ */
+
+function header(title, subtitle) {
+
+    return `
+        <div class="page-header">
+
+            <div>
+                <h1>${title}</h1>
+                <p>${subtitle}</p>
+            </div>
+
+            <div class="crop-badge">
+                🌱 ${profile.crop}
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   DASHBOARD
+================================ */
+
+function dashboard() {
+
+    let totalIncome =
+        records.reduce(
+            (sum,r)=>sum+Number(r.income),0
+        ) + currentIncome;
+
+    let totalExpenses =
+        records.reduce(
+            (sum,r)=>sum+Number(r.expenses),0
+        ) + currentExpenses;
+
+    let profit =
+        totalIncome-totalExpenses;
+
+    let tips =
+        cropTips[profile.crop] ||
+        cropTips.Rice;
+
+    return `
+
+        ${header(
+            `Namaste, ${profile.name || "Farmer"} 👋`,
+            `Your ${profile.crop} farming dashboard`
+        )}
+
+        <div class="grid-4">
+
+            ${stat(
+                "💰",
+                "Total Income",
+                money(totalIncome),
+                "Recorded farming income"
+            )}
+
+            ${stat(
+                "🧾",
+                "Total Expenses",
+                money(totalExpenses),
+                "Recorded farming expenses"
+            )}
+
+            ${stat(
+                profit >= 0 ? "📈" : "📉",
+                "Total Profit",
+                money(profit),
+                "Income − Expenses"
+            )}
+
+            ${stat(
+                "🌱",
+                "Main Crop",
+                profile.crop,
+                `${profile.land} acres`
+            )}
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <div class="card">
+
+                <div class="section-title">
+                    💡 Today's Farming Advice
+                </div>
+
+                <div style="
+                    background:#f5f9f3;
+                    padding:18px;
+                    border-radius:15px;
+                ">
+
+                    <strong style="color:#254e2c">
+                        ${profile.crop} Tip
+                    </strong>
+
+                    <p style="
+                        color:#5e695f;
+                        line-height:1.6;
+                        margin:10px 0;
+                    ">
+                        ${tips[0]}
+                    </p>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="showPageByName('tips')"
+                    >
+                        View All Tips →
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="section-title">
+                    ₹ Current Crop Finances
+                </div>
+
+                <div class="grid-3">
+
+                    ${miniFinance(
+                        "🧾",
+                        "Expenses",
+                        money(currentExpenses)
+                    )}
+
+                    ${miniFinance(
+                        "💰",
+                        "Income",
+                        money(currentIncome)
+                    )}
+
+                    ${miniFinance(
+                        "📈",
+                        "Balance",
+                        money(currentIncome-currentExpenses)
+                    )}
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="showPageByName('finance')"
+                    style="margin-top:18px"
+                >
+                    Manage Finances →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                📊 Income vs Expenses
+            </div>
+
+            ${chart(
+                "Total Income",
+                totalIncome,
+                totalIncome,
+                "income"
+            )}
+
+            ${chart(
+                "Total Expenses",
+                totalExpenses,
+                totalIncome,
+                "expense"
+            )}
+
+            ${chart(
+                "Profit",
+                Math.max(profit,0),
+                totalIncome,
+                "income"
+            )}
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                ⚡ Quick Actions
+            </div>
+
+            <div class="quick-grid">
+
+                ${quick(
+                    "🤖",
+                    "Ask Kisan AI",
+                    "Get farming advice",
+                    "assistant"
+                )}
+
+                ${quick(
+                    "🎤",
+                    "Voice Assistant",
+                    "Speak your question",
+                    "assistant"
+                )}
+
+                ${quick(
+                    "🐛",
+                    "Crop Disease",
+                    "Check crop symptoms",
+                    "disease"
+                )}
+
+                ${quick(
+                    "☁️",
+                    "Weather",
+                    "View farming weather",
+                    "weather"
+                )}
+
+                ${quick(
+                    "📜",
+                    "Farm History",
+                    "View previous records",
+                    "history"
+                )}
+
+                ${quick(
+                    "📞",
+                    "Helpline",
+                    "Get agricultural help",
+                    "helpline"
+                )}
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   FINANCE
+================================ */
+
+function finance() {
+
+    let profit =
+        currentIncome-currentExpenses;
+
+    return `
+
+        ${header(
+            "Farm Finance",
+            "Track crop expenses, income and profit"
+        )}
+
+        <div class="grid-3">
+
+            ${stat(
+                "🧾",
+                "Current Expenses",
+                money(currentExpenses),
+                ""
+            )}
+
+            ${stat(
+                "💰",
+                "Current Income",
+                money(currentIncome),
+                ""
+            )}
+
+            ${stat(
+                profit >= 0 ? "📈" : "📉",
+                "Current Profit/Loss",
+                money(profit),
+                ""
+            )}
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <div class="card">
+
+                <div class="section-title">
+                    🧾 Add Expense
+                </div>
+
+                <label>
+                    Expense Category
+                    <select id="expenseCategory">
+                        <option>Seeds</option>
+                        <option>Fertilizer</option>
+                        <option>Labour</option>
+                        <option>Irrigation</option>
+                        <option>Machinery</option>
+                        <option>Pesticides</option>
+                        <option>Transport</option>
+                        <option>Other</option>
+                    </select>
+                </label>
+
+                <label style="margin-top:15px">
+                    Amount (₹)
+                    <input
+                        id="expenseAmount"
+                        type="number"
+                        placeholder="Enter amount"
+                    >
+                </label>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="addExpense()"
+                    style="margin-top:15px"
+                >
+                    Add Expense
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="section-title">
+                    💰 Add Income
+                </div>
+
+                <label>
+                    Income Source
+                    <select id="incomeSource">
+                        <option>Crop Sale</option>
+                        <option>Market Sale</option>
+                        <option>Farmer Market</option>
+                        <option>Other</option>
+                    </select>
+                </label>
+
+                <label style="margin-top:15px">
+                    Amount (₹)
+                    <input
+                        id="incomeAmount"
+                        type="number"
+                        placeholder="Enter amount"
+                    >
+                </label>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="addIncome()"
+                    style="margin-top:15px"
+                >
+                    Add Income
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                📊 Current Season Summary
+            </div>
+
+            ${chart(
+                "Income",
+                currentIncome,
+                Math.max(currentIncome,currentExpenses,1),
+                "income"
+            )}
+
+            ${chart(
+                "Expenses",
+                currentExpenses,
+                Math.max(currentIncome,currentExpenses,1),
+                "expense"
+            )}
+
+            ${chart(
+                "Profit",
+                Math.max(profit,0),
+                Math.max(currentIncome,currentExpenses,1),
+                "income"
+            )}
+
+            <button
+                class="btn btn-danger"
+                onclick="resetFinance()"
+            >
+                Reset Current Season
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   ANALYTICS
+================================ */
+
+function analytics() {
+
+    let income =
+        records.reduce(
+            (s,r)=>s+Number(r.income),0
+        ) + currentIncome;
+
+    let expenses =
+        records.reduce(
+            (s,r)=>s+Number(r.expenses),0
+        ) + currentExpenses;
+
+    let profit = income-expenses;
+
+    let percentage =
+        income > 0
+            ? Math.round((profit/income)*100)
+            : 0;
+
+    return `
+
+        ${header(
+            "Profit & Loss Analysis",
+            "Understand your farm financial performance"
+        )}
+
+        <div class="grid-3">
+
+            ${stat(
+                "💰",
+                "Total Income",
+                money(income),
+                ""
+            )}
+
+            ${stat(
+                "🧾",
+                "Total Expenses",
+                money(expenses),
+                ""
+            )}
+
+            ${stat(
+                profit >= 0 ? "📈" : "📉",
+                "Net Result",
+                money(profit),
+                ""
+            )}
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                📊 Financial Comparison
+            </div>
+
+            ${chart("Income",income,income,"income")}
+
+            ${chart("Expenses",expenses,income,"expense")}
+
+            ${chart(
+                "Profit",
+                Math.max(profit,0),
+                income,
+                "income"
+            )}
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <div class="card">
+
+                <div class="section-title">
+                    📈 Profit Percentage
+                </div>
+
+                <div style="
+                    font-size:45px;
+                    font-weight:800;
+                    color:${profit >= 0 ? "#2f6b3b" : "#b44232"};
+                    margin-top:20px;
+                ">
+                    ${percentage}%
+                </div>
+
+                <p style="
+                    color:#687268;
+                    line-height:1.6;
+                    margin-top:8px;
+                ">
+                    Profit compared with total recorded income.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="section-title">
+                    💡 Recommendation
+                </div>
+
+                <p style="
+                    color:#596259;
+                    line-height:1.7;
+                    margin-top:15px;
+                ">
+                    ${
+                        profit >= 0
+                        ?
+                        "Your recorded income is currently higher than your expenses. Continue recording every cost so you can compare crops and seasons accurately."
+                        :
+                        "Your recorded expenses are currently higher than your income. Review major cost categories and compare them with previous seasons."
+                    }
+                </p>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   HISTORY
+================================ */
+
+function history() {
+
+    let rows = records.map(record => {
+
+        let profit =
+            Number(record.income) -
+            Number(record.expenses);
+
+        return `
+            <tr>
+
+                <td>${record.season}</td>
+                <td>${record.crop}</td>
+                <td>${record.area} acres</td>
+                <td>${money(record.expenses)}</td>
+                <td>${money(record.income)}</td>
+
+                <td style="
+                    font-weight:bold;
+                    color:${profit >= 0 ? "#2f6b3b" : "#b44232"};
+                ">
+                    ${money(profit)}
+                </td>
+
+                <td>
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteRecord(${record.id})"
+                    >
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+        `;
+    }).join("");
+
+    return `
+
+        ${header(
+            "Farming History",
+            "Save and compare previous crop seasons"
+        )}
+
+        <div class="card">
+
+            <div class="section-title">
+                ➕ Add Farming Record
+            </div>
+
+            <div class="form-grid">
+
+                <label>
+                    Season
+                    <input
+                        id="recordSeason"
+                        value="Kharif 2026"
+                    >
+                </label>
+
+                <label>
+                    Crop
+                    <select id="recordCrop">
+                        ${crops.map(c=>`
+                            <option ${c===profile.crop?"selected":""}>
+                                ${c}
+                            </option>
+                        `).join("")}
+                    </select>
+                </label>
+
+                <label>
+                    Land (acres)
+                    <input
+                        id="recordArea"
+                        type="number"
+                        value="${profile.land}"
+                    >
+                </label>
+
+                <label>
+                    Expenses (₹)
+                    <input
+                        id="recordExpenses"
+                        type="number"
+                        placeholder="Enter expenses"
+                    >
+                </label>
+
+                <label>
+                    Income (₹)
+                    <input
+                        id="recordIncome"
+                        type="number"
+                        placeholder="Enter income"
+                    >
+                </label>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="addRecord()"
+                style="margin-top:16px"
+            >
+                Save Farming Record
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                📜 Previous Seasons
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Season</th>
+                            <th>Crop</th>
+                            <th>Area</th>
+                            <th>Expenses</th>
+                            <th>Income</th>
+                            <th>Profit/Loss</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   AI ASSISTANT
+================================ */
+
+let messages = [
+    {
+        type:"ai",
+        text:"Namaste! 🌾 I am Kisan AI. Ask me about your crop, pests, irrigation, soil, expenses or farming practices."
+    }
+];
+
+function assistant() {
+
+    return `
+
+        ${header(
+            "Kisan AI Assistant",
+            "Ask your farming question in your preferred language"
+        )}
+
+        <div class="chat">
+
+            <div class="chat-header">
+
+                <div style="font-size:20px;font-weight:bold">
+                    🤖 Kisan AI
+                </div>
+
+                <div style="font-size:12px;opacity:.7">
+                    Farmer-friendly advisory assistant
+                </div>
+
+            </div>
+
+
+            <div class="chat-body" id="chatBody">
+
+                ${messages.map(message => `
+
+                    <div class="message ${message.type}">
+
+                        <div>
+
+                            <div class="bubble">
+                                ${message.text}
+                            </div>
+
+                            ${
+                                message.type === "ai"
+                                ?
+                                `<button
+                                    class="speak-btn"
+                                    onclick='speak(${JSON.stringify(message.text)})'
+                                >
+                                    🔊 Listen
+                                </button>`
+                                :
+                                ""
+                            }
+
+                        </div>
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+
+            <div class="chat-input">
+
+                <input
+                    id="question"
+                    placeholder="Ask about your crop..."
+                    onkeydown="if(event.key==='Enter') askQuestion()"
+                >
+
+                <button
+                    class="mic"
+                    onclick="startVoice()"
+                    title="Voice input"
+                >
+                    🎤
+                </button>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="askQuestion()"
+                >
+                    Send
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                💬 Suggested Questions
+            </div>
+
+            <div class="quick-grid">
+
+                ${[
+                    "How should I manage irrigation?",
+                    "What should I check for pests?",
+                    "How can I reduce farming expenses?",
+                    "How do I improve my crop profit?",
+                    "What should I do if leaves have spots?",
+                    "Will rain affect my farm work?"
+                ].map(q=>`
+
+                    <button
+                        class="quick-action"
+                        onclick='askQuestion(${JSON.stringify(q)})'
+                    >
+                        ${q} →
+                    </button>
+
+                `).join("")}
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   AI ANSWER
+================================ */
+
+function getAIAnswer(question) {
+
+    let q = question.toLowerCase();
+
+    if(
+        q.includes("pest") ||
+        q.includes("insect") ||
+        q.includes("bug")
+    ) {
+
+        return `
+        For ${profile.crop}, first identify the pest from
+        affected leaves or crop parts. Check several plants
+        before taking action. Avoid spraying chemicals without
+        confirming the pest and recommended product with a
+        local agricultural expert.
+        `;
+    }
+
+    if(
+        q.includes("water") ||
+        q.includes("irrigation") ||
+        q.includes("నీరు")
+    ) {
+
+        return `
+        For ${profile.crop}, irrigation should depend on
+        soil moisture, crop stage and local weather.
+        Avoid both water stress and unnecessary waterlogging.
+        Check the soil before irrigating.
+        `;
+    }
+
+    if(
+        q.includes("fertilizer") ||
+        q.includes("fertiliser") ||
+        q.includes("manure") ||
+        q.includes("ఎరువు")
+    ) {
+
+        return `
+        Use fertilizer according to soil-test recommendations
+        and crop requirements. Avoid adding extra fertilizer
+        just because the crop looks weak. For crop-specific
+        advice, consult a local agricultural expert.
+        `;
+    }
+
+    if(
+        q.includes("profit") ||
+        q.includes("income") ||
+        q.includes("expense")
+    ) {
+
+        let profit =
+            currentIncome-currentExpenses;
+
+        return `
+        Your current recorded income is ${money(currentIncome)},
+        expenses are ${money(currentExpenses)}, and your current
+        result is ${money(profit)}. Keep recording every expense
+        so that you can compare your crop profitability.
+        `;
+    }
+
+    if(
+        q.includes("disease") ||
+        q.includes("leaf") ||
+        q.includes("spot")
+    ) {
+
+        return `
+        For possible crop disease, check whether symptoms occur
+        on new leaves, old leaves, stems or fruits and whether
+        the problem is spreading. A clear photo can help a local
+        agriculture expert identify the problem more accurately.
+        `;
+    }
+
+    if(
+        q.includes("weather") ||
+        q.includes("rain")
+    ) {
+
+        return `
+        Before irrigation or spraying, check the local weather
+        forecast. If heavy rain is expected, avoid unnecessary
+        irrigation and postpone field operations when conditions
+        are unsuitable.
+        `;
+    }
+
+    return `
+        For ${profile.crop}, regularly observe your crop,
+        soil and weather and keep your farming records updated.
+        Tell me more specifically about the problem, such as
+        the crop symptom, affected plant part and how long it
+        has been happening.
+    `;
+}
+
+
+/* ==============================
+   ASK QUESTION
+================================ */
+
+function askQuestion(customQuestion) {
+
+    let input =
+        customQuestion ||
+        document.getElementById("question").value;
+
+    if(!input || !input.trim()) return;
+
+    messages.push({
+        type:"user",
+        text:input
+    });
+
+    renderPage("assistant");
+
+    setTimeout(() => {
+
+        messages.push({
+            type:"ai",
+            text:getAIAnswer(input)
+        });
+
+        renderPage("assistant");
+
+    },500);
+}
+
+
+/* ==============================
+   VOICE
+================================ */
+
+function startVoice() {
+
+    const Recognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if(!Recognition) {
+
+        alert(
+            "Voice recognition is not supported in this browser. Please use Google Chrome."
+        );
+
+        return;
+    }
+
+    const recognition =
+        new Recognition();
+
+    const languages = {
+        English:"en-IN",
+        Telugu:"te-IN",
+        Hindi:"hi-IN",
+        Tamil:"ta-IN",
+        Kannada:"kn-IN",
+        Malayalam:"ml-IN",
+        Marathi:"mr-IN",
+        Bengali:"bn-IN",
+        Odia:"or-IN",
+        Punjabi:"pa-IN"
+    };
+
+    recognition.lang =
+        languages[profile.language] || "en-IN";
+
+    recognition.interimResults = false;
+
+    recognition.start();
+
+    recognition.onstart = function() {
+
+        alert(
+            "🎤 Listening... Please speak your question."
+        );
+    };
+
+    recognition.onresult = function(event) {
+
+        const text =
+            event.results[0][0].transcript;
+
+        askQuestion(text);
+    };
+
+    recognition.onerror = function() {
+
+        alert(
+            "Could not understand your voice. Please try again."
+        );
+    };
+}
+
+
+/* ==============================
+   TEXT TO SPEECH
+================================ */
+
+function speak(text) {
+
+    if(!window.speechSynthesis) {
+
+        alert(
+            "Text-to-speech is not supported in this browser."
+        );
+
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const languages = {
+        English:"en-IN",
+        Telugu:"te-IN",
+        Hindi:"hi-IN",
+        Tamil:"ta-IN",
+        Kannada:"kn-IN",
+        Malayalam:"ml-IN",
+        Marathi:"mr-IN",
+        Bengali:"bn-IN",
+        Odia:"or-IN",
+        Punjabi:"pa-IN"
+    };
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.lang =
+        languages[profile.language] || "en-IN";
+
+    window.speechSynthesis.speak(speech);
+}
+
+
+/* ==============================
+   DISEASE
+================================ */
+
+function disease() {
+
+    return `
+
+        ${header(
+            "Crop Disease & Pest Help",
+            "Describe what you see in your field"
+        )}
+
+        <div class="grid-2">
+
+            <div class="card">
+
+                <div class="section-title">
+                    🐛 Crop Symptom Checker
+                </div>
+
+                <label>
+                    Select Crop
+
+                    <select id="diseaseCrop">
+
+                        ${crops.map(c=>`
+                            <option ${c===profile.crop?"selected":""}>
+                                ${c}
+                            </option>
+                        `).join("")}
+
+                    </select>
+
+                </label>
+
+
+                <label style="margin-top:15px">
+
+                    What do you see?
+
+                    <textarea
+                        id="symptoms"
+                        placeholder="Example: leaves are turning yellow and small insects are visible..."
+                    ></textarea>
+
+                </label>
+
+
+                <button
+                    class="btn btn-primary"
+                    onclick="checkDisease()"
+                    style="margin-top:15px"
+                >
+                    Check Symptoms
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="section-title">
+                    🔎 Advisory
+                </div>
+
+                <div
+                    id="diagnosis"
+                    style="
+                        background:#f5f9f3;
+                        padding:20px;
+                        border-radius:15px;
+                        color:#667167;
+                        line-height:1.7;
+                    "
+                >
+                    Describe the symptom on your crop to receive general guidance.
+                </div>
+
+                <div style="
+                    margin-top:18px;
+                    background:#fff7e9;
+                    padding:15px;
+                    border-radius:14px;
+                    color:#72562b;
+                    font-size:13px;
+                    line-height:1.6;
+                ">
+                    ⚠️ Do not use a pesticide solely from an AI
+                    suggestion. Confirm the diagnosis and treatment
+                    with an agricultural expert.
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+function checkDisease() {
+
+    const crop =
+        document.getElementById("diseaseCrop").value;
+
+    const symptom =
+        document.getElementById("symptoms").value;
+
+    if(!symptom.trim()) {
+
+        alert("Please describe the crop symptom.");
+
+        return;
+    }
+
+    document.getElementById("diagnosis").innerHTML = `
+
+        <strong>${crop} symptom observation</strong>
+
+        <p style="margin-top:10px">
+            You entered: "${symptom}"
+        </p>
+
+        <p style="margin-top:10px">
+            Check whether the symptoms occur on new leaves,
+            old leaves, stems or fruits. Observe several plants
+            and check whether the problem is spreading.
+        </p>
+
+        <p style="margin-top:10px">
+            A clear photograph can help a local agriculture
+            expert identify the issue more accurately.
+        </p>
+    `;
+}
+
+
+/* ==============================
+   WEATHER
+================================ */
+
+function weather() {
+
+    return `
+
+        ${header(
+            "Weather for Farmers",
+            "Weather information to help plan farm activities"
+        )}
+
+        <div class="weather-main">
+
+            <div>
+
+                <div style="opacity:.75">
+                    Current Conditions
+                </div>
+
+                <div class="temperature">
+                    29°C
+                </div>
+
+                <div>
+                    Partly Cloudy · ${profile.state}
+                </div>
+
+            </div>
+
+            <div class="weather-icon">
+                ⛅
+            </div>
+
+        </div>
+
+
+        <div class="grid-3">
+
+            ${weatherCard(
+                "Today",
+                "⛅",
+                "29°C",
+                "Partly cloudy"
+            )}
+
+            ${weatherCard(
+                "Tomorrow",
+                "🌧️",
+                "27°C",
+                "Possible rain"
+            )}
+
+            ${weatherCard(
+                "Day 3",
+                "☀️",
+                "31°C",
+                "Mostly sunny"
+            )}
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                🌾 Farm Planning Advice
+            </div>
+
+            <ul style="
+                line-height:2;
+                color:#596259;
+                margin-left:20px;
+                margin-top:10px;
+            ">
+
+                <li>
+                    Check actual local weather before irrigation.
+                </li>
+
+                <li>
+                    Avoid spraying when strong rain or wind is expected.
+                </li>
+
+                <li>
+                    Keep drainage paths clear before heavy rainfall.
+                </li>
+
+            </ul>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   TIPS
+================================ */
+
+function tips() {
+
+    let list =
+        cropTips[profile.crop] ||
+        cropTips.Rice;
+
+    return `
+
+        ${header(
+            "Daily Crop Tips",
+            `Practical suggestions for ${profile.crop}`
+        )}
+
+        <div class="grid-3">
+
+            ${list.map((tip,index)=>`
+
+                <div class="card">
+
+                    <div style="font-size:30px">
+                        ${index===0?"🌱":index===1?"💧":"🔎"}
+                    </div>
+
+                    <h3 style="
+                        color:#29402d;
+                        margin:15px 0 8px;
+                    ">
+                        Tip ${index+1}
+                    </h3>
+
+                    <p style="
+                        color:#6d776e;
+                        line-height:1.7;
+                    ">
+                        ${tip}
+                    </p>
+
+                </div>
+
+            `).join("")}
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                💡 Remember
+            </div>
+
+            <p style="
+                color:#626d63;
+                line-height:1.7;
+                margin-top:10px;
+            ">
+                Good farming decisions come from observing the
+                crop, soil and weather regularly. Keep records of
+                what you do and compare results across seasons.
+            </p>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   HELPLINE
+================================ */
+
+function helpline() {
+
+    return `
+
+        ${header(
+            "Farmer Helpline",
+            "Get additional agricultural guidance"
+        )}
+
+        <div class="helpline">
+
+            <div style="font-size:50px">
+                📞
+            </div>
+
+            <div style="opacity:.7">
+                Agricultural Assistance
+            </div>
+
+            <div class="helpline-number">
+                1800-180-1551
+            </div>
+
+            <p style="
+                max-width:600px;
+                margin:12px auto;
+                line-height:1.6;
+                opacity:.8;
+            ">
+                Use an appropriate agricultural helpline available
+                in your region for official government or extension
+                support.
+            </p>
+
+            <button
+                class="btn btn-secondary"
+                onclick="window.location.href='tel:18001801551'"
+            >
+                📞 Call Helpline
+            </button>
+
+        </div>
+
+
+        <div class="grid-3" style="margin-top:20px">
+
+            <div class="card">
+                <div style="font-size:30px">🌱</div>
+                <h3 style="margin-top:12px">
+                    Crop Problems
+                </h3>
+                <p style="
+                    color:#6d776e;
+                    margin-top:8px;
+                    line-height:1.6;
+                ">
+                    Get help identifying crop problems and symptoms.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size:30px">💧</div>
+                <h3 style="margin-top:12px">
+                    Irrigation
+                </h3>
+                <p style="
+                    color:#6d776e;
+                    margin-top:8px;
+                    line-height:1.6;
+                ">
+                    Ask about irrigation and water management.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size:30px">📜</div>
+                <h3 style="margin-top:12px">
+                    Farm Records
+                </h3>
+                <p style="
+                    color:#6d776e;
+                    margin-top:8px;
+                    line-height:1.6;
+                ">
+                    Keep your farming history ready for advisors.
+                </p>
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   PROFILE
+================================ */
+
+function profilePage() {
+
+    return `
+
+        ${header(
+            "Farmer Profile",
+            "Keep your farming information updated"
+        )}
+
+        <div class="card">
+
+            <div class="section-title">
+                👨‍🌾 Your Information
+            </div>
+
+            <div class="form-grid">
+
+                <label>
+                    Farmer Name
+
+                    <input
+                        id="farmerName"
+                        value="${profile.name}"
+                        placeholder="Enter your name"
+                    >
+                </label>
+
+
+                <label>
+                    Phone Number
+
+                    <input
+                        id="farmerPhone"
+                        value="${profile.phone}"
+                        placeholder="Enter phone number"
+                    >
+                </label>
+
+
+                <label>
+                    Village / Town
+
+                    <input
+                        id="farmerVillage"
+                        value="${profile.village}"
+                        placeholder="Enter village"
+                    >
+                </label>
+
+
+                <label>
+                    State
+
+                    <select id="farmerState">
+
+                        ${states.map(s=>`
+                            <option
+                                ${s===profile.state?"selected":""}
+                            >
+                                ${s}
+                            </option>
+                        `).join("")}
+
+                    </select>
+                </label>
+
+
+                <label>
+                    Main Crop
+
+                    <select id="farmerCrop">
+
+                        ${crops.map(c=>`
+                            <option
+                                ${c===profile.crop?"selected":""}
+                            >
+                                ${c}
+                            </option>
+                        `).join("")}
+
+                    </select>
+                </label>
+
+
+                <label>
+                    Land Area (acres)
+
+                    <input
+                        id="farmerLand"
+                        type="number"
+                        value="${profile.land}"
+                    >
+                </label>
+
+
+                <label>
+                    Preferred Language
+
+                    <select id="farmerLanguage">
+
+                        ${languages.map(l=>`
+                            <option
+                                ${l===profile.language?"selected":""}
+                            >
+                                ${l}
+                            </option>
+                        `).join("")}
+
+                    </select>
+                </label>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                onclick="saveProfile()"
+                style="margin-top:20px"
+            >
+                ✓ Save Profile
+            </button>
+
+            <div style="
+                margin-top:18px;
+                background:#eef6ed;
+                padding:15px;
+                border-radius:13px;
+                color:#46604b;
+                font-size:13px;
+            ">
+                ✓ Your information is saved in this browser.
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+                ⚙️ Demo Data
+            </div>
+
+            <p style="
+                color:#667167;
+                line-height:1.6;
+                margin-bottom:15px;
+            ">
+                Reset the current profile and finance data.
+            </p>
+
+            <button
+                class="btn btn-danger"
+                onclick="resetProfile()"
+            >
+                Reset Profile
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   COMPONENT HELPERS
+================================ */
+
+function stat(icon,title,value,sub) {
+
+    return `
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ${icon}
+            </div>
+
+            <div class="stat-title">
+                ${title}
+            </div>
+
+            <div class="stat-value">
+                ${value}
+            </div>
+
+            <div class="stat-sub">
+                ${sub}
+            </div>
+
+        </div>
+    `;
+}
+
+function miniFinance(icon,title,value) {
+
+    return `
+        <div style="
+            border:1px solid #e1e8df;
+            border-radius:14px;
+            padding:14px;
+        ">
+
+            <div style="font-size:19px">
+                ${icon}
+            </div>
+
+            <div style="
+                color:#778078;
+                font-size:12px;
+                margin-top:6px;
+            ">
+                ${title}
+            </div>
+
+            <div style="
+                color:#254e2c;
+                font-weight:800;
+                margin-top:4px;
+            ">
+                ${value}
+            </div>
+
+        </div>
+    `;
+}
+
+function chart(label,value,max,type) {
+
+    let width =
+        max > 0
+            ? Math.max((value/max)*100,2)
+            : 2;
+
+    return `
+        <div class="chart-row">
+
+            <div class="chart-label">
+                <span>${label}</span>
+                <strong>${money(value)}</strong>
+            </div>
+
+            <div class="bar-bg">
+
+                <div
+                    class="bar ${
+                        type==="income"
+                        ? "income-bar"
+                        : "expense-bar"
+                    }"
+                    style="width:${width}%"
+                ></div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+function quick(icon,title,text,page) {
+
+    return `
+        <button
+            class="quick-action"
+            onclick="showPageByName('${page}')"
+        >
+
+            <div class="quick-icon">
+                ${icon}
+            </div>
+
+            <div class="quick-title">
+                ${title}
+            </div>
+
+            <div class="quick-text">
+                ${text}
+            </div>
+
+        </button>
+    `;
+}
+
+function weatherCard(day,icon,temp,text) {
+
+    return `
+        <div class="card">
+
+            <div style="color:#697369">
+                ${day}
+            </div>
+
+            <div style="font-size:40px;margin-top:10px">
+                ${icon}
+            </div>
+
+            <div style="
+                font-size:24px;
+                font-weight:800;
+                color:#254e2c;
+            ">
+                ${temp}
+            </div>
+
+            <div style="
+                color:#6d776e;
+                font-size:13px;
+            ">
+                ${text}
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ==============================
+   ADD EXPENSE
+================================ */
+
+function addExpense() {
+
+    let amount =
+        Number(
+            document.getElementById("expenseAmount").value
+        );
+
+    if(!amount || amount <= 0) {
+
+        alert("Enter a valid expense amount.");
+
+        return;
+    }
+
+    currentExpenses += amount;
+
+    saveData();
+
+    renderPage("finance");
+
+    alert("Expense added successfully.");
+}
+
+
+/* ==============================
+   ADD INCOME
+================================ */
+
+function addIncome() {
+
+    let amount =
+        Number(
+            document.getElementById("incomeAmount").value
+        );
+
+    if(!amount || amount <= 0) {
+
+        alert("Enter a valid income amount.");
+
+        return;
+    }
+
+    currentIncome += amount;
+
+    saveData();
+
+    renderPage("finance");
+
+    alert("Income added successfully.");
+}
+
+
+/* ==============================
+   RESET FINANCE
+================================ */
+
+function resetFinance() {
+
+    if(
+        !confirm(
+            "Are you sure you want to reset current finance data?"
+        )
+    ) return;
+
+    currentExpenses = 0;
+    currentIncome = 0;
+
+    saveData();
+
+    renderPage("finance");
+}
+
+
+/* ==============================
+   ADD RECORD
+================================ */
+
+function addRecord() {
+
+    const season =
+        document.getElementById("recordSeason").value;
+
+    const crop =
+        document.getElementById("recordCrop").value;
+
+    const area =
+        Number(
+            document.getElementById("recordArea").value
+        );
+
+    const expenses =
+        Number(
+            document.getElementById("recordExpenses").value
+        );
+
+    const income =
+        Number(
+            document.getElementById("recordIncome").value
+        );
+
+    if(!season || !expenses || !income) {
+
+        alert(
+            "Please enter season, expenses and income."
+        );
+
+        return;
+    }
+
+    records.unshift({
+
+        id:Date.now(),
+
+        season:season,
+
+        crop:crop,
+
+        area:area,
+
+        expenses:expenses,
+
+        income:income
+
+    });
+
+    saveData();
+
+    renderPage("history");
+
+    alert("Farming record saved.");
+}
+
+
+/* ==============================
+   DELETE RECORD
+================================ */
+
+function deleteRecord(id) {
+
+    if(!confirm("Delete this farming record?"))
+        return;
+
+    records =
+        records.filter(
+            record => record.id !== id
+        );
+
+    saveData();
+
+    renderPage("history");
+}
+
+
+/* ==============================
+   SAVE PROFILE
+================================ */
+
+function saveProfile() {
+
+    profile.name =
+        document.getElementById("farmerName").value;
+
+    profile.phone =
+        document.getElementById("farmerPhone").value;
+
+    profile.village =
+        document.getElementById("farmerVillage").value;
+
+    profile.state =
+        document.getElementById("farmerState").value;
+
+    profile.crop =
+        document.getElementById("farmerCrop").value;
+
+    profile.land =
+        Number(
+            document.getElementById("farmerLand").value
+        );
+
+    profile.language =
+        document.getElementById("farmerLanguage").value;
+
+    saveData();
+
+    renderPage("profile");
+
+    alert("Profile saved successfully.");
+}
+
+
+/* ==============================
+   RESET PROFILE
+================================ */
+
+function resetProfile() {
+
+    if(
+        !confirm(
+            "Reset your profile and current finance data?"
+        )
+    ) return;
+
+    profile = {
+        name:"",
+        phone:"",
+        village:"",
+        state:"Andhra Pradesh",
+        crop:"Rice",
+        land:1,
+        language:"Telugu"
+    };
+
+    currentExpenses = 0;
+    currentIncome = 0;
+
+    saveData();
+
+    renderPage("profile");
+}
+
+
+/* ==============================
+   RENDER PAGE
+================================ */
+
+function renderPage(page) {
+
+    let html = "";
+
+    switch(page) {
+
+        case "dashboard":
+            html = dashboard();
+            break;
+
+        case "finance":
+            html = finance();
+            break;
+
+        case "analytics":
+            html = analytics();
+            break;
+
+        case "history":
+            html = history();
+            break;
+
+        case "assistant":
+            html = assistant();
+            break;
+
+        case "disease":
+            html = disease();
+            break;
+
+        case "weather":
+            html = weather();
+            break;
+
+        case "tips":
+            html = tips();
+            break;
+
+        case "helpline":
+            html = helpline();
+            break;
+
+        case "profile":
+            html = profilePage();
+            break;
+
+        default:
+            html = dashboard();
+    }
+
+    document.getElementById("content").innerHTML = html;
+
+    saveData();
+}
+
+
+/* ==============================
+   SIMPLE NAVIGATION
+================================ */
+
+function showPageByName(page) {
+
+    renderPage(page);
+
+    document.querySelectorAll(".nav button")
+        .forEach(btn => {
+
+            if(
+                btn.getAttribute("onclick") &&
+                btn.getAttribute("onclick")
+                    .includes("'" + page + "'")
+            ) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+
+        });
+}
+
+
+/* ==============================
+   INITIALIZE
+================================ */
+
+saveData();
+
+renderPage("dashboard");
+
+</script>
+
+</body>
+</html>
